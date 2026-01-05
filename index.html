@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Train Tap Challenge PRO</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: white;
+}
+
+.game {
+  background: rgba(0,0,0,0.6);
+  padding: 25px;
+  border-radius: 20px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 0 20px black;
+}
+
+h1 { margin-bottom: 10px; }
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+#tapBtn {
+  background: orange;
+  font-weight: bold;
+}
+
+#startBtn {
+  background: #00c6ff;
+  color: black;
+}
+
+.train {
+  font-size: 50px;
+  margin: 10px 0;
+  animation: move 1s infinite linear;
+}
+
+@keyframes move {
+  0% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  100% { transform: translateX(-10px); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+  <h1>🚆 Train Tap PRO</h1>
+
+  <div class="train">🚆</div>
+
+  <div class="stats">
+    <span>⏱ <span id="time">10</span>s</span>
+    <span>🔥 <span id="score">0</span></span>
+  </div>
+
+  <p>🏆 High Score: <span id="high">0</span></p>
+
+  <button id="tapBtn" onclick="tap()">TAP FAST!</button>
+  <button id="startBtn" onclick="startGame()">START</button>
+</div>
+
+<script>
+let score = 0;
+let time = 10;
+let running = false;
+let highScore = localStorage.getItem("trainHigh") || 0;
+
+document.getElementById("high").innerText = highScore;
+
+function startGame() {
+  score = 0;
+  time = 10;
+  running = true;
+  document.getElementById("score").innerText = score;
+  document.getElementById("time").innerText = time;
+
+  let timer = setInterval(() => {
+    if (!running) return;
+    time--;
+    document.getElementById("time").innerText = time;
+
+    if (time <= 0) {
+      clearInterval(timer);
+      running = false;
+
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("trainHigh", highScore);
+        document.getElementById("high").innerText = highScore;
+        alert("🔥 NEW RECORD! Score: " + score);
+      } else {
+        alert("🚆 Train Chali! Score: " + score);
+      }
+    }
+  }, 1000);
+}
+
+function tap() {
+  if (!running) return;
+  score++;
+  document.getElementById("score").innerText = score;
+
+  // vibration
+  if (navigator.vibrate) navigator.vibrate(40);
+
+  // sound
+  let beep = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=");
+  beep.play();
+}
+</script>
+
+</body>
+</html>
